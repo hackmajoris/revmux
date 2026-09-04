@@ -4,8 +4,9 @@
 > maintained fork of [umputun/revmux](https://github.com/umputun/revmux) that adds an OpenCode executor
 > (see [Getting started with OpenCode](#getting-started-with-opencode)). It is not merged upstream and there
 > is no plan to send it as a pull request, so file OpenCode-related issues and PRs here, not against
-> upstream. Everything else in this document — install, profiles, task rounds, the archive — describes
-> upstream `revmux` unchanged; only the OpenCode sections below are specific to this fork.
+> upstream. [Install](#install) below installs from this fork; everything else in this document — profiles,
+> task rounds, the archive — describes upstream `revmux` unchanged, and only the OpenCode sections are
+> specific to this fork.
 
 [![build](https://github.com/umputun/revmux/actions/workflows/ci.yml/badge.svg)](https://github.com/umputun/revmux/actions/workflows/ci.yml) [![Coverage Status](https://coveralls.io/repos/github/umputun/revmux/badge.svg?branch=master)](https://coveralls.io/github/umputun/revmux?branch=master)
 
@@ -72,37 +73,43 @@ instruction to judge them independently rather than confirm them.
 
 ## Install
 
-Homebrew, on macOS:
+Homebrew, on macOS, from this fork's own tap:
 
 ```
-brew install umputun/apps/revmux
+brew install hackmajoris/apps/revmux
 ```
 
 Prebuilt binaries for macOS and Linux, on amd64 and arm64, are attached to every
-[release](https://github.com/umputun/revmux/releases), along with `.deb` and `.rpm` packages:
+[release of this fork](https://github.com/hackmajoris/revmux/releases), along with `.deb` and `.rpm` packages:
 
 ```
 dpkg -i revmux_<version>_linux_amd64.deb
 rpm -i revmux_<version>_linux_amd64.rpm
 ```
 
-With a Go toolchain, `go install github.com/umputun/revmux/app@latest` builds it from source, installed as
-`app`, so rename it to `revmux`. Or build from a clone:
+Or build from a clone:
 
 ```
-git clone https://github.com/umputun/revmux.git && cd revmux
+git clone https://github.com/hackmajoris/revmux.git && cd revmux
 make build        # produces .bin/revmux
 make install      # and symlinks it to /usr/local/bin/revmux
 ```
 
 `make install` links rather than copies, so a later `make build` is picked up without reinstalling. Override
 the location with `BINDIR` when `/usr/local/bin` is not writable. `make uninstall` removes the link.
+`go install` does not work for this fork: `go.mod` still declares `module github.com/umputun/revmux`, so
+`go install github.com/hackmajoris/revmux/app@latest` fails on the module-path mismatch — use one of the
+three methods above instead.
+
+**Don't need OpenCode?** Install upstream instead — it gets releases, a Homebrew cask and `go install`
+support this fork doesn't carry: `brew install umputun/apps/revmux`, or see
+[umputun/revmux](https://github.com/umputun/revmux#install) for the rest.
 
 **Then install the skill, which is what asks for a review.** The binary runs one; the skill is how your
 coding agent drives it. In Claude Code:
 
 ```
-/plugin marketplace add umputun/revmux
+/plugin marketplace add hackmajoris/revmux
 /plugin install revmux@revmux
 ```
 
@@ -357,7 +364,7 @@ same task after fixes.
 
 | harness | location | install |
 |---|---|---|
-| Claude Code | `.claude-plugin/skills/revmux/` | `/plugin marketplace add umputun/revmux` then `/plugin install revmux@revmux` |
+| Claude Code | `.claude-plugin/skills/revmux/` | `/plugin marketplace add hackmajoris/revmux` then `/plugin install revmux@revmux` |
 | Codex CLI | `plugins/codex/skills/revmux/` | `cp -r plugins/codex/skills/revmux ~/.codex/skills/revmux` |
 | OpenCode | `.opencode/skills/revmux/` | project-local as shipped, or `cp -r .opencode/skills/revmux ~/.config/opencode/skills/revmux` for every project |
 
@@ -368,26 +375,10 @@ overlay, and `analyze-corpus.py` reads the archive back as numbers about the rev
 ### Getting started with OpenCode
 
 The opencode executor lives on this fork ([hackmajoris/revmux](https://github.com/hackmajoris/revmux)) and
-has not shipped upstream yet, so umputun's own Homebrew cask and release binaries do not have it. This fork
-publishes its own instead.
+has not shipped upstream yet — that's why [Install](#install) above installs from this fork rather than
+from `umputun/apps/revmux`.
 
-1. **Install revmux from this fork.** Homebrew, on macOS — from this fork's own tap, not upstream's:
-
-   ```
-   brew install hackmajoris/apps/revmux
-   ```
-
-   Or build from source:
-
-   ```
-   git clone https://github.com/hackmajoris/revmux.git
-   cd revmux
-   make build      # -> .bin/revmux
-   make install    # symlinks .bin/revmux -> /usr/local/bin/revmux
-   ```
-
-   `make install` links rather than copies, so a later `make build` (after `git pull`) is picked up without
-   reinstalling. Either way, check `which revmux` resolves to this fork's binary rather than a stray
+1. **Install revmux from this fork**, as above. Check `which revmux` resolves to it rather than a stray
    `umputun/apps/revmux` install — `revmux --version` names the commit it was built from.
 
 2. **Install opencode itself** and make sure it is authenticated: `opencode --version` should work.
