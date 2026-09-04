@@ -11,8 +11,10 @@
 
 **[revmux.com](https://revmux.com)** · [Documentation](https://revmux.com/docs) · [Reference](https://revmux.com/reference) · [Releases](https://github.com/umputun/revmux/releases)
 
-The badges and links above point at upstream — this fork has no separate CI badge, docs site or release
-page of its own, and the two will drift as this fork's OpenCode work continues independently of upstream.
+The badges and links above point at upstream and describe upstream's own history, not this fork's — this
+fork has its own [CI](https://github.com/hackmajoris/revmux/actions), [releases](https://github.com/hackmajoris/revmux/releases)
+and [Homebrew tap](https://github.com/hackmajoris/homebrew-apps), which is what
+[Getting started with OpenCode](#getting-started-with-opencode) installs from.
 
 revmux runs a structured multi-agent review. It spawns and supervises `claude --print` and `codex exec`
 subprocesses, then returns findings on stdout as JSON or markdown.
@@ -366,10 +368,16 @@ overlay, and `analyze-corpus.py` reads the archive back as numbers about the rev
 ### Getting started with OpenCode
 
 The opencode executor lives on this fork ([hackmajoris/revmux](https://github.com/hackmajoris/revmux)) and
-has not shipped upstream yet, so the Homebrew cask and the release binaries do not have it. Build from the
-fork instead of installing the published binary.
+has not shipped upstream yet, so umputun's own Homebrew cask and release binaries do not have it. This fork
+publishes its own instead.
 
-1. **Build revmux from the fork:**
+1. **Install revmux from this fork.** Homebrew, on macOS — from this fork's own tap, not upstream's:
+
+   ```
+   brew install hackmajoris/apps/revmux
+   ```
+
+   Or build from source:
 
    ```
    git clone https://github.com/hackmajoris/revmux.git
@@ -379,7 +387,8 @@ fork instead of installing the published binary.
    ```
 
    `make install` links rather than copies, so a later `make build` (after `git pull`) is picked up without
-   reinstalling. Check `which revmux` resolves to this symlink rather than a stray Homebrew install.
+   reinstalling. Either way, check `which revmux` resolves to this fork's binary rather than a stray
+   `umputun/apps/revmux` install — `revmux --version` names the commit it was built from.
 
 2. **Install opencode itself** and make sure it is authenticated: `opencode --version` should work.
 
